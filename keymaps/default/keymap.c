@@ -1,5 +1,12 @@
 #include QMK_KEYBOARD_H
 
+// TODO
+// - GAMEBAR KEY
+// - START RECORD GB KEY
+// - STOP RECORD GB KEY
+// - PUNCTUATIONS
+// - MEDIA KEYS
+
 // ---------------------------------------------------------------------------------------------------------
 
 enum layers {
@@ -10,6 +17,9 @@ enum layers {
 
 enum custom_keycodes {
     KC_STAB = LSFT(KC_TAB),
+    KC_ECUT  = LCTL(KC_X),
+    KC_ECPY = LCTL(KC_C),
+    KC_EPST  = LCTL(KC_V),
 };
 
 enum combos {
@@ -44,7 +54,7 @@ combo_t key_combos[] = {
 
 void keyboard_post_init_user(void) {
     rgblight_enable_noeeprom(); 
-    rgblight_setrgb(5, 5, 5);   
+    rgblight_setrgb(2, 2, 2);   
 }
 
 
@@ -52,17 +62,17 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
         
         case _SUPER:
-            rgblight_setrgb(255, 25, 0); 
+            rgblight_setrgb(255, 25, 2); 
             break;
 
         
         case _GAME:
-            rgblight_setrgb(0, 255, 0); 
+            rgblight_setrgb(25, 255, 2); 
             break;
 
             
         default:
-            rgblight_setrgb(5, 5, 5); 
+            rgblight_setrgb(2, 2, 2); 
             break;
     }
     
@@ -84,10 +94,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),    
 
     [_SUPER] = LAYOUT(
-         KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8  ,KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,
-         _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
-         _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
-         _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
+         KC_SLEP,KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8  ,KC_F9  ,KC_F10 ,KC_F11 ,
+         KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,KC_PSCR,KC_SCRL,KC_PAUS,KC_INS ,KC_WHOM,KC_F12 ,
+         KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,KC_LEFT,KC_DOWN,KC_UP  ,KC_RGHT,KC_WBAK,KC_NO  ,
+         KC_NO  ,KC_NO  ,KC_ECUT,KC_ECPY,KC_EPST,KC_NO  ,KC_HOME,KC_PGDN,KC_PGUP,KC_END ,KC_WFWD,KC_NO  ,
                                          _______,_______,_______,_______,
                                  _______,_______,_______,_______,_______,_______
     ),
