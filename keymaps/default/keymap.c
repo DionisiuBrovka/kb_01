@@ -3,13 +3,26 @@
 enum layers {
     _BASE = 0,
     _SUPER,
-    _LEFT,
-    _RIGHT,
 };
 
-#define LWR MO(_LEFT)
-#define RWR MO(_RIGHT)
-#define SWR MO(_SUPER)
+enum custom_keycodes {
+    KC_STAB = LSFT(KC_TAB),
+};
+
+enum combos {
+    COMBO_SUPER_LR,
+    COMBO_LENGTH
+};
+
+#define SLTG TG(_SUPER)
+
+uint16_t COMBO_LEN = COMBO_LENGTH;
+
+const uint16_t PROGMEM tg_super_layer_combo[] = {KC_LSFT, KC_DEL, COMBO_END};
+
+combo_t key_combos[] = {
+    [COMBO_SUPER_LR] = COMBO(tg_super_layer_combo, SLTG),
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -19,27 +32,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_ESC  ,KC_Q   ,KC_W   ,KC_E   ,KC_R   ,KC_T   ,KC_Y   ,KC_U   ,KC_I   ,KC_O   ,KC_P   ,KC_RBRC,
         KC_EQL  ,KC_A   ,KC_S   ,KC_D   ,KC_F   ,KC_G   ,KC_H   ,KC_J   ,KC_K   ,KC_L   ,KC_SCLN,KC_QUOT,
         KC_MINS ,KC_Z   ,KC_X   ,KC_C   ,KC_V   ,KC_B   ,KC_N   ,KC_M   ,KC_COMM,KC_DOT ,KC_SLSH,KC_NUBS,
-                                         _______,_______,_______,_______,
-                                     LWR,KC_SPC ,KC_TAB ,KC_ENT ,KC_BSPC,RWR
+                                         KC_LGUI,KC_LALT,KC_TAB ,KC_STAB,
+                                 KC_LSFT,KC_SPC ,KC_LCTL,KC_ENT ,KC_BSPC,KC_DEL
     ),    
-
-    [_LEFT] = LAYOUT(
-         _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
-         _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
-         _______,_______,_______,_______,_______,_______,KC_LEFT,KC_DOWN,KC_UP  ,KC_RGHT,_______,_______,
-         _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
-                                         KC_SPC ,KC_TAB ,KC_ENT ,KC_DEL ,
-                                 _______,KC_LGUI,KC_LALT,KC_LCTL,KC_LSFT,SWR
-    ),
-
-    [_RIGHT] = LAYOUT(
-         _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
-         _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
-         _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
-         _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,   
-                                         KC_SPC ,KC_TAB ,KC_ENT ,KC_DEL ,
-                                     SWR,KC_RGUI,KC_RALT,KC_RCTL,KC_RSFT,_______
-    ),
 
     [_SUPER] = LAYOUT(
          KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8  ,KC_F9  ,KC_F10 ,KC_F11 ,KC_F12 ,
