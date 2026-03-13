@@ -2,7 +2,7 @@
 
 ![keyboard_img](img/img_banner_0.png)
 
-Проект DIY сплит клавиатуры c раскладкой удобной для русского языка.
+Проект DIY *сплит* клавиатуры c раскладкой удобной для русского языка.
 
 ## About
 
@@ -31,4 +31,4 @@ See the [build environment setup](https://docs.qmk.fm/#/getting_started_build_to
 
 ---
 
-Keyboard Maintainer: [Dionisiu Brovka](https://github.com/DionisiuBrovka) **([Telegram](https://t.me/goppi)) [Email](dionisiu.brovka@gmail.com)**
+🌟 Keyboard Maintainer: [Dionisiu Brovka](https://github.com/DionisiuBrovka) **([Telegram](https://t.me/goppi)) ([Email](dionisiu.brovka@gmail.com))**
