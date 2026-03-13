@@ -5,6 +5,7 @@
 enum layers {
     _BASE = 0,
     _SUPER,
+    _GAME,
 };
 
 enum custom_keycodes {
@@ -13,21 +14,29 @@ enum custom_keycodes {
 
 enum combos {
     COMBO_SUPER_LR,
+    COMBO_GAME_LR,
+    COMBO_CLEAN_LR,
     COMBO_LENGTH
 };
 
 // ---------------------------------------------------------------------------------------------------------
 
 #define SLTG TG(_SUPER)
+#define GLTG TG(_GAME)
+#define BTO TO(_BASE)
 
 // ---------------------------------------------------------------------------------------------------------
 
 uint16_t COMBO_LEN = COMBO_LENGTH;
 
 const uint16_t PROGMEM tg_super_layer_combo[] = {KC_LSFT, KC_DEL, COMBO_END};
+const uint16_t PROGMEM tg_game_layer_combo[] =  {KC_LSFT, KC_SPC, KC_BSPC, KC_DEL, COMBO_END};
+const uint16_t PROGMEM to_base_layer_combo[] =  {KC_LSFT, KC_SPC, KC_LCTL, KC_ENT, KC_BSPC, KC_DEL, COMBO_END};
 
 combo_t key_combos[] = {
     [COMBO_SUPER_LR] = COMBO(tg_super_layer_combo, SLTG),
+    [COMBO_GAME_LR] = COMBO(tg_game_layer_combo, GLTG),
+    [COMBO_CLEAN_LR] = COMBO(to_base_layer_combo, BTO),
 };
 
 // ---------------------------------------------------------------------------------------------------------
@@ -35,7 +44,7 @@ combo_t key_combos[] = {
 
 void keyboard_post_init_user(void) {
     rgblight_enable_noeeprom(); 
-    rgblight_setrgb(0, 0, 0);  
+    rgblight_setrgb(5, 5, 5);   
 }
 
 
@@ -46,9 +55,14 @@ layer_state_t layer_state_set_user(layer_state_t state) {
             rgblight_setrgb(255, 25, 0); 
             break;
 
+        
+        case _GAME:
+            rgblight_setrgb(0, 255, 0); 
+            break;
+
             
         default:
-            rgblight_setrgb(0, 0, 0); 
+            rgblight_setrgb(5, 5, 5); 
             break;
     }
     
@@ -74,6 +88,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
          _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
          _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
+                                         _______,_______,_______,_______,
+                                 _______,_______,_______,_______,_______,_______
+    ),
+
+    [_GAME] = LAYOUT(
+         KC_ESC ,KC_1   ,KC_2   ,KC_3   ,KC_4   ,KC_5   ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,
+         KC_TAB ,KC_Q   ,KC_W   ,KC_E   ,KC_R   ,KC_T   ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,
+         KC_CAPS,KC_A   ,KC_S   ,KC_D   ,KC_F   ,KC_G   ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,
+         KC_LSFT,KC_Z   ,KC_X   ,KC_C   ,KC_V   ,KC_B   ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,KC_NO  ,
                                          _______,_______,_______,_______,
                                  _______,_______,_______,_______,_______,_______
     ),
