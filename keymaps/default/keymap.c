@@ -1,5 +1,7 @@
 #include QMK_KEYBOARD_H
 
+// ---------------------------------------------------------------------------------------------------------
+
 enum layers {
     _BASE = 0,
     _SUPER,
@@ -14,7 +16,11 @@ enum combos {
     COMBO_LENGTH
 };
 
+// ---------------------------------------------------------------------------------------------------------
+
 #define SLTG TG(_SUPER)
+
+// ---------------------------------------------------------------------------------------------------------
 
 uint16_t COMBO_LEN = COMBO_LENGTH;
 
@@ -23,6 +29,33 @@ const uint16_t PROGMEM tg_super_layer_combo[] = {KC_LSFT, KC_DEL, COMBO_END};
 combo_t key_combos[] = {
     [COMBO_SUPER_LR] = COMBO(tg_super_layer_combo, SLTG),
 };
+
+// ---------------------------------------------------------------------------------------------------------
+
+
+void keyboard_post_init_user(void) {
+    rgblight_enable_noeeprom(); 
+    rgblight_setrgb(0, 0, 0);  
+}
+
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    switch (get_highest_layer(state)) {
+        
+        case _SUPER:
+            rgblight_setrgb(255, 25, 0); 
+            break;
+
+            
+        default:
+            rgblight_setrgb(0, 0, 0); 
+            break;
+    }
+    
+    return state;
+}
+
+// ---------------------------------------------------------------------------------------------------------
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
