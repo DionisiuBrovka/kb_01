@@ -56,7 +56,7 @@ const uint16_t PROGMEM to_base_layer_combo[] =  {KC_LSFT, KC_SPC, KC_LCTL, KC_EN
 
 combo_t key_combos[] = {
     [COMBO_SUPER_LR] = COMBO(tg_super_layer_combo, SLTG),
-    [COMBO_SUPER_LR_MOD] = COMBO(mo_super_layer_combo, SLMO),
+    [COMBO_SUPER_LR_MOD] = COMBO(mo_super_layer_combo, SLMO), 
     [COMBO_GAME_LR] = COMBO(tg_game_layer_combo, GLTG),
     [COMBO_PUNCT_LR_MOD] = COMBO(mo_punct_layer_combo, PLMO),
     [COMBO_CLEAN_LR] = COMBO(to_base_layer_combo, BTO),
@@ -80,7 +80,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          KC_SLEP,KC_F1  ,KC_F2  ,KC_F3  ,KC_F4  ,KC_F5  ,KC_F6  ,KC_F7  ,KC_F8  ,KC_F9  ,KC_F10 ,KC_F11 ,
          KC_NO  ,KC_NO  ,KC_NO  ,KC_MSTP,KC_MPLY,KC_NO  ,KC_PSCR,KC_SCRL,KC_PAUS,KC_INS ,KC_WHOM,KC_F12 , 
          KC_NO  ,KC_NO  ,KC_MPRV,KC_VOLD,KC_VOLU,KC_MNXT,KC_LEFT,KC_DOWN,KC_UP  ,KC_RGHT,KC_WBAK,KC_NO  ,
-         KC_NO  ,KC_NO  ,KC_ECUT,KC_ECPY,KC_EPST,KC_MUTE,KC_HOME,KC_PGDN,KC_PGUP,KC_END ,KC_WFWD,KC_NO  ,
+         KC_NO  ,KC_NO  ,KC_SPC ,KC_LCTL,KC_LALT,KC_MUTE,KC_HOME,KC_PGDN,KC_PGUP,KC_END ,KC_WFWD,KC_NO  ,
                                          _______,_______,_______,_______,
                                  _______,_______,_______,_______,_______,_______
     ),
