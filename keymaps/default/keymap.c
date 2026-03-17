@@ -59,11 +59,12 @@ enum combos {
     COMBO_SUPER_LR_MOD,     // Momentary _SUPER (primary)
     COMBO_SUPER_LR_MOD_ALT, // Momentary _SUPER (alternative chord)
     COMBO_PUNCT_LR,         // Toggle _PUNCT
-    COMBO_PUNCT_LR_MOD,     // Momentary _PUNCT
+    COMBO_PUNCT_LR_MOD,     // Momentary _PUNCT (primary)
+    COMBO_PUNCT_LR_MOD_ALT, // Momentary _PUNCT (alternative chord)
     COMBO_MEDIA_LR_MOD,     // Momentary _MEDIA
     COMBO_GAME_LR,          // Toggle _GAME
-    COMBO_CLEAN_LR,         // Emergency reset to _BASE
-    COMBO_CAPS,             // Caps Lock
+    COMBO_CLEAN_LR,         // Emergency reset to _BASE 
+    COMBO_GUI,              // Caps Lock       
     COMBO_LENGTH            // ← keeps combo count in sync automatically
 };
 
@@ -94,6 +95,7 @@ enum custom_keycodes {
     RCBR_A,              // }  (right brace)   — Alt+125
     LABK_A,              // <  (less-than)     — Alt+60
     RABK_A,              // >  (greater-than)  — Alt+62
+    K_MOD,
 };
 
 /* --------------------------------------------------------------------------
@@ -242,6 +244,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             send_alt_code(d, 2);
             return false;
         }
+
+           
+    }
+
+    if (keycode == KC_BSPC && record->event.pressed) {
+        uint8_t mods = get_mods();
+        uint8_t osm  = get_oneshot_mods();
+
+        if ((mods | osm) & MOD_MASK_SHIFT) {
+            // временно снять shift, отправить Del, вернуть моды
+            del_mods(MOD_MASK_SHIFT);
+            del_oneshot_mods(MOD_MASK_SHIFT);
+
+            tap_code(KC_DEL);
+
+            set_mods(mods);
+            set_oneshot_mods(osm);
+            return false; // блокируем обычный Backspace
+        }
     }
 
     return true;  // Let QMK handle every other keycode normally
@@ -257,15 +278,20 @@ uint16_t COMBO_LEN = COMBO_LENGTH;
  * Each array lists the keys that must be pressed simultaneously to fire
  * the combo.  Every array MUST end with COMBO_END.
  */
-const uint16_t PROGMEM tg_super_layer_combo[]     = {KC_LSFT, KC_DEL, COMBO_END};                              // LShift + Del
-const uint16_t PROGMEM mo_super_layer_combo[]     = {KC_SPC, KC_LALT, COMBO_END};                              // Space + LAlt
-const uint16_t PROGMEM mo_super_layer_combo_alt[] = {KC_BSPC, KC_TAB, COMBO_END};                              // Backspace + Tab
-const uint16_t PROGMEM tg_punct_layer_combo[]     = {KC_SPC, KC_BSPC, COMBO_END};                              // Space + Backspace
-const uint16_t PROGMEM mo_punct_layer_combo[]     = {KC_LCTL, KC_LGUI, COMBO_END};                             // LCtrl + LWin
-const uint16_t PROGMEM mo_media_layer_combo[]     = {KC_ENT, KC_STAB, COMBO_END};                              // Enter + Shift+Tab
-const uint16_t PROGMEM tg_game_layer_combo[]      = {KC_LSFT, KC_SPC, KC_BSPC, KC_DEL, COMBO_END};            // 4-key chord → game mode
-const uint16_t PROGMEM to_base_layer_combo[]      = {KC_LSFT, KC_SPC, KC_LCTL, KC_ENT, KC_BSPC, KC_DEL, COMBO_END}; // 6-key emergency reset
-const uint16_t PROGMEM caps_combo[]               = {KC_LCTL, KC_ENT, COMBO_END};                              // LCtrl + Enter
+const uint16_t PROGMEM mo_super_layer_combo[]     = {KC_SPC, KC_STAB, COMBO_END};                              
+const uint16_t PROGMEM mo_super_layer_combo_alt[] = {KC_BSPC, KC_TAB, COMBO_END};                              
+const uint16_t PROGMEM mo_punct_layer_combo[]     = {KC_LCTL, KC_CAPS, COMBO_END};     
+const uint16_t PROGMEM mo_punct_layer_combo_alt[] = {KC_ENT, KC_ESC, COMBO_END};     
+const uint16_t PROGMEM mo_media_layer_combo[]     = {KC_STAB, KC_TAB, COMBO_END};                              
+
+const uint16_t PROGMEM tg_super_layer_combo[]     = {KC_ENT, K_MOD, COMBO_END};                              
+const uint16_t PROGMEM tg_punct_layer_combo[]     = {KC_BSPC, K_MOD, COMBO_END};                              
+const uint16_t PROGMEM tg_game_layer_combo[]      = {KC_LALT, K_MOD, COMBO_END};            
+
+const uint16_t PROGMEM to_base_layer_combo[]      = {KC_LSFT, KC_SPC , KC_LCTL, KC_ENT , KC_BSPC, KC_LALT, COMBO_END}; 
+
+const uint16_t PROGMEM gui_combo[]                = {KC_ENT, KC_BSPC, COMBO_END};                              
+                          
 
 /* Map each combo identifier to its trigger keys and resulting action */
 combo_t key_combos[] = {
@@ -273,11 +299,12 @@ combo_t key_combos[] = {
     [COMBO_SUPER_LR_MOD]     = COMBO(mo_super_layer_combo,     SLMO),    // Hold for _SUPER (primary)
     [COMBO_SUPER_LR_MOD_ALT] = COMBO(mo_super_layer_combo_alt, SLMO),    // Hold for _SUPER (alt chord)
     [COMBO_PUNCT_LR]         = COMBO(tg_punct_layer_combo,     PLTG),    // Toggle _PUNCT layer
-    [COMBO_PUNCT_LR_MOD]     = COMBO(mo_punct_layer_combo,     PLMO),    // Hold for _PUNCT
+    [COMBO_PUNCT_LR_MOD]     = COMBO(mo_punct_layer_combo,     PLMO),    // Hold for _PUNCT (primary)
+    [COMBO_PUNCT_LR_MOD_ALT] = COMBO(mo_punct_layer_combo_alt, PLMO),    // Hold for _PUNCT (alt chord)
     [COMBO_GAME_LR]          = COMBO(tg_game_layer_combo,      GLTG),    // Toggle _GAME layer
     [COMBO_CLEAN_LR]         = COMBO(to_base_layer_combo,      BTO),     // Emergency return to _BASE
     [COMBO_MEDIA_LR_MOD]     = COMBO(mo_media_layer_combo,     MLMO),    // Hold for _MEDIA
-    [COMBO_CAPS]             = COMBO(caps_combo,               KC_CAPS), // Caps Lock
+    [COMBO_GUI]              = COMBO(gui_combo,                KC_LGUI), // Caps Lock
 };
 
 /* ==========================================================================
@@ -290,21 +317,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      * Layer 0: _BASE — Standard QWERTY with number row
      * ------------------------------------------------------------------
      * ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐
-     * │  `  │  1  │  2  │  3  │  4  │  5  │  6  │  7  │  8  │  9  │  0  │  [  │
-     * │ Esc │  Q  │  W  │  E  │  R  │  T  │  Y  │  U  │  I  │  O  │  P  │  ]  │
+     * │ MOD │  1  │  2  │  3  │  4  │  5  │  6  │  7  │  8  │  9  │  0  │  [  │
+     * │  `  │  Q  │  W  │  E  │  R  │  T  │  Y  │  U  │  I  │  O  │  P  │  ]  │
      * │  =  │  A  │  S  │  D  │  F  │  G  │  H  │  J  │  K  │  L  │  ;  │  '  │
      * │  -  │  Z  │  X  │  C  │  V  │  B  │  N  │  M  │  ,  │  .  │  /  │  \  │
-     * │     │     │     │     │LAlt │LGui │S+Tab│ Tab │     │     │     │     │
-     * │     │     │LSft │Space│LCtrl│Enter│BSpc │ Del │     │     │     │     │
+     * │     │     │     │     │S+Tab│Caps │ Esc │ Tab │     │     │     │     │
+     * │     │     │     │LSft │Space│LCtrl│Enter│BSpc │LAlt │     │     │     │
      * └─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
      */
     [_BASE] = LAYOUT(
-        KC_GRV , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   , KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_LBRC,
-        KC_ESC , KC_Q   , KC_W   , KC_E   , KC_R   , KC_T   , KC_Y   , KC_U   , KC_I   , KC_O   , KC_P   , KC_RBRC,
+        K_MOD  , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   , KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_LBRC,
+        KC_GRV , KC_Q   , KC_W   , KC_E   , KC_R   , KC_T   , KC_Y   , KC_U   , KC_I   , KC_O   , KC_P   , KC_RBRC,
         KC_EQL , KC_A   , KC_S   , KC_D   , KC_F   , KC_G   , KC_H   , KC_J   , KC_K   , KC_L   , KC_SCLN, KC_QUOT,
         KC_MINS, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   , KC_N   , KC_M   , KC_COMM, KC_DOT , KC_SLSH, KC_NUBS,
-                                            KC_LALT, KC_LGUI, KC_STAB, KC_TAB ,
-                                   KC_LSFT, KC_SPC , KC_LCTL, KC_ENT , KC_BSPC, KC_DEL
+                                            KC_STAB, KC_CAPS, KC_ESC , KC_TAB ,
+                                   KC_LSFT, KC_SPC , KC_LCTL, KC_ENT , KC_BSPC, KC_LALT
     ),
 
     /* ------------------------------------------------------------------
@@ -318,8 +345,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      *  • Thumb keys: transparent (inherit from _BASE)
      * ------------------------------------------------------------------ */
     [_SUPER] = LAYOUT(
-        KC_SLEP, KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  , KC_F6  , KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 ,
-        KC_PWR , KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_PSCR, KC_SCRL, KC_PAUS, KC_INS , KC_NO  , KC_F12 ,
+        KC_PWR , KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  , KC_F6  , KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 ,
+        KC_SLEP, KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_PSCR, KC_SCRL, KC_PAUS, KC_INS , KC_NO  , KC_F12 ,
         KC_WBAK, KC_NO  , KC_HOME, KC_PGDN, KC_PGUP, KC_END , KC_LEFT, KC_DOWN, KC_UP  , KC_RGHT, KC_NO  , KC_WHOM,
         KC_NO  , KC_NO  , KC_LALT, KC_LCTL, KC_LSFT, KC_LGUI, KC_TAB , KC_LSFT, KC_LCTL, KC_LALT, KC_NO  , KC_NO  ,
                                             _______, _______, _______, _______,
@@ -374,7 +401,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      *  • Thumb cluster remains transparent (inherited from _BASE)
      * ------------------------------------------------------------------ */
     [_GAME] = LAYOUT(
-        KC_ESC , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   , KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_LBRC,
+        KC_ESC , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   , KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , K_MOD  ,
         KC_TAB , KC_Q   , KC_W   , KC_E   , KC_R   , KC_T   , KC_Y   , KC_U   , KC_I   , KC_O   , KC_P   , KC_RBRC,
         KC_CAPS, KC_A   , KC_S   , KC_D   , KC_F   , KC_G   , KC_H   , KC_J   , KC_K   , KC_L   , KC_SCLN, KC_QUOT,
         KC_LALT, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   , KC_N   , KC_M   , KC_COMM, KC_DOT , KC_SLSH, KC_NUBS,
@@ -436,4 +463,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     }
 
     return state;  // Must return the state for QMK's internal layer processing
+
+
 }
