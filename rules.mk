@@ -10,4 +10,4 @@ AUDIO_ENABLE = no
 SWAP_HANDS_ENABLE = no      	
 OLED_ENABLE = no		
 		
-WS2812_DRIVER = vendor     		
+WS2812_DRIVER = vendor
